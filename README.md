@@ -1,4 +1,4 @@
-# Staex App
+# Staex App https://www.staex.io/ 
 
 The **Staex App** is a prototype application developed to demonstrate how decentralized infrastructure and blockchain technology can be used for **fleet monitoring, telemetry transparency, and verifiable reporting** in public transportation systems.
 
