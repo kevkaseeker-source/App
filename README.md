@@ -1,39 +1,71 @@
-**Welcome to your Base44 project** 
+# Staex App
 
-**About**
+The **Staex App** is a prototype application developed to demonstrate how decentralized infrastructure and blockchain technology can be used for **fleet monitoring, telemetry transparency, and verifiable reporting** in public transportation systems.
 
-View and Edit  your app on [Base44.com](http://Base44.com) 
+The application focuses on bus fleets in the **NRW (North Rhine-Westphalia) region in Germany** and combines real-time data visualization with blockchain-based data storage.
 
-This project contains everything you need to run your app locally.
+---
 
-**Edit the code in your local development environment**
+## Features
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+### Live Bus Fleet Map (Fleet Health)
 
-**Prerequisites:** 
+The application provides a **live map view of the bus fleet operating in NRW**, allowing users to visualize the current fleet distribution and monitor overall fleet health in real time.
 
-1. Clone the repository using the project's Git URL 
-2. Navigate to the project directory
-3. Install dependencies: `npm install`
-4. Create an `.env.local` file and set the right environment variables
+### On-Chain Telemetry Data
 
-```
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=your_backend_url
+Telemetry data from buses can be stored **on-chain**, enabling transparent and tamper-resistant records of operational data.
 
-e.g.
-VITE_BASE44_APP_ID=cbef744a8545c389ef439ea6
-VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
-```
+This allows stakeholders to verify fleet activity and system status through blockchain-based infrastructure.
 
-Run the app: `npm run dev`
+### Report Bus Damage (Image Verification)
 
-**Publish your changes**
+The app includes a feature that allows users to **capture photos of bus damage** directly from the application.
 
-Open [Base44.com](http://Base44.com) and click on Publish.
+These images are stored **on-chain**, creating verifiable evidence of incidents and improving transparency in fleet maintenance processes.
 
-**Docs & Support**
+The **image capture and blockchain storage module** was developed by **Andrew Robinson from END Corp**.
 
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
+END Corp:
+https://endcorp.co/
 
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+---
+
+## Purpose
+
+This project demonstrates how decentralized technologies can be used to:
+
+* increase **transparency in public infrastructure**
+* create **tamper-proof operational records**
+* improve **fleet maintenance workflows**
+* enable **verifiable reporting through blockchain**
+
+---
+
+## Technology
+
+The frontend application is built with:
+
+* React
+* Vite
+* JavaScript
+
+The project is designed as a **prototype for experimentation and ecosystem collaboration**.
+
+---
+
+## Credits
+
+Image capture and on-chain storage module developed by:
+
+**Andrew Robinson**
+END Corp
+https://endcorp.co/
+
+---
+
+## License
+
+This project is intended for research, prototyping, and ecosystem collaboration.
+
+
