@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Activity, AlertTriangle } from "lucide-react";
+import { Activity, AlertTriangle, Database } from "lucide-react";
 
 // ─────────────────────────────────────────────
 // CONFIGURATION – edit these values freely
 // ─────────────────────────────────────────────
-const FLEET_HEALTH_URL = "https://example.com/fleet-health"; // ← replace with your target URL
+const FLEET_HEALTH_URL = "https://www.staex.io/fleet-management";
+const ON_CHAIN_DATA_URL = "https://tc.staex.io/#stats";
 
 const TILES = [
   {
@@ -15,7 +16,7 @@ const TILES = [
     icon: Activity,
     gradient: "from-emerald-500 to-teal-600",
     shadow: "shadow-emerald-200",
-    action: "url", // "url" = opens external website | "page" = navigates to internal page
+    action: "url",
     target: FLEET_HEALTH_URL,
   },
   {
@@ -25,8 +26,18 @@ const TILES = [
     icon: AlertTriangle,
     gradient: "from-rose-500 to-red-600",
     shadow: "shadow-rose-200",
-    action: "page", // navigates to internal ReportDamage page
+    action: "page",
     target: "ReportDamage",
+  },
+  {
+    id: "on-chain-data",
+    label: "On Chain Data",
+    subtitle: "View blockchain-stored fleet records",
+    icon: Database,
+    gradient: "from-violet-500 to-purple-600",
+    shadow: "shadow-violet-200",
+    action: "url",
+    target: ON_CHAIN_DATA_URL,
   },
 ];
 // ─────────────────────────────────────────────

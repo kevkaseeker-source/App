@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { ChevronLeft, CheckCircle2 } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import PhotoCapture from "@/components/damage/PhotoCapture";
 
 // ─────────────────────────────────────────────
@@ -33,7 +33,7 @@ export default function ReportDamage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    await base44.entities.DamageReport.create({ ...form, status: "Submitted" });
+    await api.entities.DamageReport.create({ ...form, status: "Submitted" });
     setSaving(false);
     setSuccess(true);
   };
