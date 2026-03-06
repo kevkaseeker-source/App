@@ -57,6 +57,7 @@ export default function Home() {
       });
 
       const deepLink = `endphoto://capture?${params.toString()}`;
+      alert(deepLink);
       window.location.href = deepLink;
       return;
     }
