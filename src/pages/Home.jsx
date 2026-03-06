@@ -46,6 +46,21 @@ export default function Home() {
   const navigate = useNavigate();
 
   const handleTile = (tile) => {
+    if (tile.id === "report-damage") {
+      const params = new URLSearchParams({
+        busId: "BUS-102",
+        driverName: "Driver A",
+        incidentDate: new Date().toISOString(),
+        damageLocation: "Rear bumper",
+        severity: "medium",
+        callback: "staex://damage-result",
+      });
+
+      const deepLink = `endphoto://capture?${params.toString()}`;
+      window.location.href = deepLink;
+      return;
+    }
+
     if (tile.action === "url") {
       window.open(tile.target, "_blank");
     } else {
@@ -55,7 +70,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-950 flex flex-col">
-      {/* Header */}
       <header className="px-6 pt-14 pb-6">
         <p className="text-xs font-semibold tracking-[0.2em] text-gray-500 uppercase mb-1">
           Fleet Management
@@ -65,7 +79,6 @@ export default function Home() {
         </h1>
       </header>
 
-      {/* Tiles */}
       <main className="flex-1 px-5 flex flex-col gap-5 pb-10">
         {TILES.map((tile) => {
           const Icon = tile.icon;
@@ -81,7 +94,6 @@ export default function Home() {
                 text-left
               `}
             >
-              {/* Background decoration */}
               <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10" />
               <div className="absolute -bottom-10 -left-6 w-32 h-32 rounded-full bg-black/10" />
 
@@ -110,7 +122,6 @@ export default function Home() {
         })}
       </main>
 
-      {/* Footer */}
       <footer className="pb-8 text-center">
         <p className="text-gray-700 text-xs tracking-wide">Fleet Operations · 2026</p>
       </footer>

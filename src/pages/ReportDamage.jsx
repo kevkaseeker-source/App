@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { ChevronLeft, CheckCircle2 } from "lucide-react";
 import { api } from "@/api/client";
-import PhotoCapture from "@/components/damage/PhotoCapture";
 
 // ─────────────────────────────────────────────
 // FORM CONFIGURATION – extend or modify freely
 // ─────────────────────────────────────────────
-const DAMAGE_LOCATIONS = ["Front", "Rear", "Left Side", "Right Side", "Interior", "Roof", "Undercarriage", "Other"];
-const SEVERITY_LEVELS   = ["Minor", "Moderate", "Severe", "Critical"];
+const DAMAGE_LOCATIONS = [
+  "Front",
+  "Rear",
+  "Left Side",
+  "Right Side",
+  "Interior",
+  "Roof",
+  "Undercarriage",
+  "Other",
+];
+
+const SEVERITY_LEVELS = ["Minor", "Moderate", "Severe", "Critical"];
 // ─────────────────────────────────────────────
 
 const INITIAL = {
@@ -20,22 +29,74 @@ const INITIAL = {
   damage_description: "",
   incident_date: new Date().toISOString().slice(0, 10),
   photo_urls: [],
+  proof_status: "",
+  proof_tx_hash: "",
+  proof_id: "",
+  proof_image_url: "",
 };
 
 export default function ReportDamage() {
   const navigate = useNavigate();
-  const [form, setForm]       = useState(INITIAL);
-  const [saving, setSaving]   = useState(false);
+  const [form, setForm] = useState(INITIAL);
+  const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const set = (field, value) => setForm((f) => ({ ...f, [field]: value }));
 
+  useEffect(() => {
+    const loadDamageResult = () => {
+      const saved = localStorage.getItem("damageResult");
+      if (!saved) return;
+
+      try {
+        const result = JSON.parse(saved);
+
+        setForm((f) => ({
+          ...f,
+          proof_status: result.status || "",
+          proof_tx_hash: result.txHash || "",
+          proof_id: result.proofId || "",
+          proof_image_url: result.imageUrl || "",
+          photo_urls: result.imageUrl ? [result.imageUrl] : f.photo_urls,
+        }));
+      } catch (error) {
+        console.error("Failed to load damage result:", error);
+      }
+    };
+
+    loadDamageResult();
+    window.addEventListener("damageResultUpdated", loadDamageResult);
+
+    return () => {
+      window.removeEventListener("damageResultUpdated", loadDamageResult);
+    };
+  }, []);
+
+  const openEndPhotoFlow = () => {
+    const params = new URLSearchParams({
+      busId: form.bus_number || "",
+      driverName: form.driver_name || "",
+      incidentDate: form.incident_date || "",
+      damageLocation: form.damage_location || "",
+      severity: form.severity || "",
+      callback: "staex://damage-result",
+    });
+
+    window.location.href = `endphoto://capture?${params.toString()}`;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    await api.entities.DamageReport.create({ ...form, status: "Submitted" });
+
+    await api.entities.DamageReport.create({
+      ...form,
+      status: "Submitted",
+    });
+
     setSaving(false);
     setSuccess(true);
+    localStorage.removeItem("damageResult");
   };
 
   if (success) {
@@ -45,9 +106,15 @@ export default function ReportDamage() {
           <CheckCircle2 size={52} className="text-emerald-400" />
         </div>
         <h2 className="text-2xl font-bold text-white mb-2">Report Submitted</h2>
-        <p className="text-gray-400 text-sm mb-10">Your damage report has been sent successfully.</p>
+        <p className="text-gray-400 text-sm mb-10">
+          Your damage report has been sent successfully.
+        </p>
         <button
-          onClick={() => { setForm(INITIAL); setSuccess(false); navigate(createPageUrl("Home")); }}
+          onClick={() => {
+            setForm(INITIAL);
+            setSuccess(false);
+            navigate(createPageUrl("Home"));
+          }}
           className="bg-white text-gray-950 font-semibold px-8 py-3.5 rounded-2xl text-sm active:scale-95 transition-transform"
         >
           Back to Dashboard
@@ -67,14 +134,15 @@ export default function ReportDamage() {
           <ChevronLeft size={20} className="text-white" />
         </button>
         <div>
-          <p className="text-xs text-gray-500 uppercase tracking-widest">Fleet Management</p>
+          <p className="text-xs text-gray-500 uppercase tracking-widest">
+            Fleet Management
+          </p>
           <h1 className="text-xl font-bold text-white">Report Bus Damage</h1>
         </div>
       </header>
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="flex-1 px-5 pb-12 space-y-6 overflow-y-auto">
-
         <Field label="Bus Number">
           <input
             required
@@ -152,16 +220,52 @@ export default function ReportDamage() {
           />
         </Field>
 
-        <PhotoCapture
-          photos={form.photo_urls}
-          onChange={(urls) => set("photo_urls", urls)}
-        />
+        <Field label="Photo Verification">
+          <button
+            type="button"
+            onClick={openEndPhotoFlow}
+            className="w-full py-4 rounded-2xl bg-blue-600 text-white font-bold text-base active:scale-[0.97] transition-all"
+          >
+            Open END Photo Verifier
+          </button>
+
+          {form.proof_status && (
+            <div className="mt-4 rounded-xl bg-gray-800 p-4 text-sm text-gray-300 space-y-2">
+              <p>
+                <span className="font-semibold text-white">Status:</span>{" "}
+                {form.proof_status}
+              </p>
+              {form.proof_tx_hash && (
+                <p>
+                  <span className="font-semibold text-white">Tx Hash:</span>{" "}
+                  {form.proof_tx_hash}
+                </p>
+              )}
+              {form.proof_id && (
+                <p>
+                  <span className="font-semibold text-white">Proof ID:</span>{" "}
+                  {form.proof_id}
+                </p>
+              )}
+              {form.proof_image_url && (
+                <p className="break-all">
+                  <span className="font-semibold text-white">Image URL:</span>{" "}
+                  {form.proof_image_url}
+                </p>
+              )}
+            </div>
+          )}
+        </Field>
 
         <button
           type="submit"
-          disabled={saving || !form.bus_number || !form.damage_location || !form.damage_description}
-          className="w-full py-4 rounded-2xl bg-rose-600 text-white font-bold text-base
-                     disabled:opacity-40 active:scale-[0.97] transition-all"
+          disabled={
+            saving ||
+            !form.bus_number ||
+            !form.damage_location ||
+            !form.damage_description
+          }
+          className="w-full py-4 rounded-2xl bg-rose-600 text-white font-bold text-base disabled:opacity-40 active:scale-[0.97] transition-all"
         >
           {saving ? "Submitting…" : "Submit Report"}
         </button>
